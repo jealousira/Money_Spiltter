@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Splitter</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0f1b14;
+  --card: #16271d;
+  --ink: #f4f1e8;
+  --muted: #8ba896;
+  --gold: #d4a843;
+  --green: #4ade80;
+  --line: #25382b;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 20% 0%, #1c3326 0%, transparent 45%),
+                    radial-gradient(circle at 90% 100%, #1a2e22 0%, transparent 40%);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 18px 60px;
+}
+
+.wrap { width: 100%; max-width: 520px; }
+
+.head { margin-bottom: 28px; }
+.eyebrow {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); font-weight: 600; margin-bottom: 8px;
+}
+h1 {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: 38px; line-height: 1.05; letter-spacing: -0.5px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+
+.input-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 22px 26px;
+  margin: 24px 0 28px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+}
+.input-label { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 500; }
+.input-row { display: flex; align-items: baseline; gap: 8px; border-bottom: 2px solid var(--line); padding-bottom: 6px; transition: border-color .2s; }
+.input-row:focus-within { border-color: var(--gold); }
+.currency { font-family: 'Fraunces', serif; font-size: 30px; color: var(--muted); }
+#amount {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--ink); font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 42px; width: 100%;
+}
+#amount::placeholder { color: #3c5446; }
+
+.section-label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); margin: 26px 0 14px; font-weight: 600;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.split { display: flex; flex-direction: column; gap: 10px; }
+.row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 16px 18px;
+  position: relative; overflow: hidden;
+}
+.row .bar {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(212,168,67,.16), rgba(212,168,67,.02));
+  width: 0; transition: width .5s cubic-bezier(.2,.8,.2,1); z-index: 0;
+}
+.row > * { position: relative; z-index: 1; }
+.row .pct {
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px;
+  min-width: 56px; color: var(--gold);
+}
+.row .tag { font-size: 13px; color: var(--muted); flex: 1; margin-left: 14px; }
+.row .val { font-family: 'Fraunces', serif; font-weight: 600; font-size: 24px; }
+
+.foot { text-align: center; margin-top: 26px; font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="eyebrow">Ikigai Money Coach</div>
+    <h1>Auto <em>Splitter</em></h1>
+  </div>
+
+  <div class="input-card">
+    <div class="input-label">Enter amount (THB)</div>
+    <div class="input-row">
+      <span class="currency">฿</span>
+      <input id="amount" type="text" inputmode="numeric" placeholder="0" autofocus>
+    </div>
+  </div>
+
+  <div class="section-label">50 / 30 / 20</div>
+  <div class="split">
+    <div class="row"><span class="bar" data-w="50"></span><span class="pct">50%</span><span class="tag">Invest</span><span class="val" data-calc="0.5">฿0</span></div>
+    <div class="row"><span class="bar" data-w="30"></span><span class="pct">30%</span><span class="tag">Happiness</span><span class="val" data-calc="0.3">฿0</span></div>
+    <div class="row"><span class="bar" data-w="20"></span><span class="pct">20%</span><span class="tag">Overseas Travel</span><span class="val" data-calc="0.2">฿0</span></div>
+  </div>
+
+  <div class="section-label">70 / 30</div>
+  <div class="split">
+    <div class="row"><span class="bar" data-w="70"></span><span class="pct">70%</span><span class="tag">Invest</span><span class="val" data-calc="0.7">฿0</span></div>
+    <div class="row"><span class="bar" data-w="30"></span><span class="pct">30%</span><span class="tag">Happiness</span><span class="val" data-calc="0.3">฿0</span></div>
+  </div>
+
+  <div class="foot">Cashflow First · Keep it Simple</div>
+</div>
+
+<script>
+const input = document.getElementById('amount');
+const fmt = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+function update() {
+  const raw = input.value.replace(/[^0-9.]/g, '');
+  const amt = parseFloat(raw) || 0;
+  document.querySelectorAll('.val').forEach(el => {
+    el.textContent = fmt(amt * parseFloat(el.dataset.calc));
+  });
+  document.querySelectorAll('.bar').forEach(el => {
+    el.style.width = el.dataset.w + '%';
+  });
+}
+
+input.addEventListener('input', () => {
+  const caret = input.selectionStart;
+  const before = input.value;
+  const raw = input.value.replace(/[^0-9.]/g, '');
+  if (raw !== '') {
+    const parts = raw.split('.');
+    parts[0] = parseInt(parts[0] || '0', 10).toLocaleString('en-US');
+    input.value = parts.length > 1 ? parts[0] + '.' + parts[1].slice(0,2) : parts[0];
+  }
+  const diff = input.value.length - before.length;
+  input.setSelectionRange(caret + diff, caret + diff);
+  update();
+});
+
+update();
+</script>
+</body>
+</html>
